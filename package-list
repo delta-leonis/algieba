@@ -1,0 +1,11 @@
+io.leonis.algieba
+io.leonis.algieba.ai
+io.leonis.algieba.algebra
+io.leonis.algieba.control
+io.leonis.algieba.control.anomaly
+io.leonis.algieba.filter
+io.leonis.algieba.geometry
+io.leonis.algieba.spatial
+io.leonis.algieba.statistic
+io.leonis.algieba.statistic.distribution
+io.leonis.algieba.tree
