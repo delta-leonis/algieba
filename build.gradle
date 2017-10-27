@@ -7,10 +7,11 @@ plugins {
 apply plugin: 'java'
 apply plugin: 'jacoco'
 apply plugin: 'signing'
-apply plugin: 'maven-publish'
+apply plugin: 'maven'
 
 group 'io.leonis'
-version '0.0.1'
+version '0.0.2'
+archivesBaseName = "algieba"
 rootProject.description = 'if you have the patience to go on counting, you discover that these pairs gradually become rarer'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -64,7 +65,7 @@ test {
 }
 
 tasks.withType(Javadoc) {
-    ext.capturedOutput = [ ]
+    ext.capturedOutput = []
     def listener = { ext.capturedOutput << it } as StandardOutputListener
 
     logging.addStandardErrorListener(listener)
@@ -93,9 +94,7 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 }
 
 artifacts {
-    archives jar
-    archives sourcesJar
-    archives javadocJar
+    archives javadocJar, sourcesJar
 }
 
 if (!project.hasProperty("signing.keyId") && System.getenv("signingKeyId") != null) {
@@ -125,123 +124,64 @@ if (project.hasProperty("sign")) {
     signArchives.enabled = false
 }
 
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            customizePom(pom, rootProject)
-            from components.java
-
-            artifact sourcesJar
-            artifact javadocJar
-
-            // sign the pom
-            pom.withXml {
-                def pomFile = file("${project.buildDir}/generated-pom.xml")
-                writeTo(pomFile)
-                def pomAscFile = signing.sign(pomFile).signatureFiles[0]
-                artifact(pomAscFile) {
-                    classifier = null
-                    extension = 'pom.asc'
-                }
-                pomFile.delete()
-            }
-
-            // sign the artifacts
-            project.tasks.signArchives.signatureFiles.each {
-                artifact(it) {
-                    def matcher = it.file =~ /-(sources|javadoc)\.jar\.asc$/
-                    if (matcher.find()) {
-                        classifier = matcher.group(1)
-                    } else {
-                        classifier = null
-                    }
-                    extension = 'jar.asc'
-                }
-            }
-        }
-    }
+uploadArchives {
     repositories {
-        maven {
-            url "https://oss.sonatype.org/service/local/staging/deploy/maven2"
-            credentials {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
                 if (project.hasProperty("sonatypeUsername") && project.hasProperty("sonatypePassword")) {
-                    username sonatypeUsername
-                    password sonatypePassword
+                    authentication(userName: sonatypeUsername, password: sonatypePassword)
                 } else if (System.getenv("sonatypeUsername") != null && System.getenv("sonatypePassword") != null) {
-                    username System.getenv("sonatypeUsername")
-                    password System.getenv("sonatypePassword")
-                } else {
-                    username null
-                    password null
+                    authentication(userName: System.getenv("sonatypeUsername"), password: System.getenv("sonatypePassword"))
                 }
             }
-        }
-    }
-}
 
-def customizePom(pom, gradleProject) {
-    pom.withXml {
-        def root = asNode()
-
-        // eliminate test-scoped dependencies (no need in maven central POMs)
-        root.dependencies.removeAll { dep ->
-            dep.scope == "test"
-        }
-
-        // add all items necessary for maven central publication
-        root.children().last() + {
-            resolveStrategy = Closure.DELEGATE_FIRST
-
-            description gradleProject.description
-            name 'algieba'
-            url 'https://github.com/delta-leonis/algieba/'
-            organization {
-                name 'delta-leonis'
-                url 'http://leonis.io/'
-            }
-            issueManagement {
-                system 'GitHub'
-                url 'https://github.com/delta-leonis/algieba/issues'
-            }
-            licenses {
-                license {
-                    name 'AGPL'
-                    url 'https://github.com/delta-leonis/algieba/blob/master/LICENSE'
-                    distribution 'repo'
+            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                if (project.hasProperty("sonatypeUsername") && project.hasProperty("sonatypePassword")) {
+                    authentication(userName: sonatypeUsername, password: sonatypePassword)
+                } else if (System.getenv("sonatypeUsername") != null && System.getenv("sonatypePassword") != null) {
+                    authentication(userName: System.getenv("sonatypeUsername"), password: System.getenv("sonatypePassword"))
                 }
             }
-            scm {
+
+            pom.project {
+                name 'algieba'
+                packaging 'jar'
+                description 'if you have the patience to go on counting, you discover that these pairs gradually become rarer'
                 url 'https://github.com/delta-leonis/algieba/'
-                connection 'scm:git:git://github.com/delta-leonis/algieba.git'
-                developerConnection 'scm:git:ssh://git@github.com/delta-leonis/algieba.git'
-            }
-            developers {
-                developer {
-                    id 'romni'
-                    name 'Rimon Oz'
+
+                licenses {
+                    license {
+                        name 'AGPL'
+                        url 'https://github.com/delta-leonis/algieba/blob/master/LICENSE'
+                        distribution 'repo'
+                    }
                 }
-                developer {
-                    id 'thumbnail'
-                    name 'Jeroen de Jong'
+                scm {
+                    url 'https://github.com/delta-leonis/algieba/'
+                    connection 'scm:git:git://github.com/delta-leonis/algieba.git'
+                    developerConnection 'scm:git:ssh://git@github.com/delta-leonis/algieba.git'
                 }
-                developer {
-                    id 'RyanMeulenkamp'
-                    name 'Ryan Meulenkamp'
-                }
-                developer {
-                    id 'ThomasHakkers'
-                    name 'Thomas Hakkers'
+                developers {
+                    developer {
+                        id 'romni'
+                        name 'Rimon Oz'
+                    }
+                    developer {
+                        id 'thumbnail'
+                        name 'Jeroen de Jong'
+                    }
+                    developer {
+                        id 'RyanMeulenkamp'
+                        name 'Ryan Meulenkamp'
+                    }
+                    developer {
+                        id 'ThomasHakkers'
+                        name 'Thomas Hakkers'
+                    }
                 }
             }
         }
-    }
-}
-
-model {
-    tasks.publishMavenJavaPublicationToMavenLocal {
-        dependsOn(project.tasks.signArchives)
-    }
-    tasks.publishMavenJavaPublicationToMavenRepository {
-        dependsOn(project.tasks.signArchives)
     }
 }
