@@ -1,0 +1,247 @@
+import static org.apache.tools.ant.taskdefs.condition.Os.*
+
+plugins {
+    id 'com.github.ksoichiro.console.reporter' version '0.5.0'
+}
+
+apply plugin: 'java'
+apply plugin: 'jacoco'
+apply plugin: 'signing'
+apply plugin: 'maven-publish'
+
+group 'io.leonis'
+version '0.0.1'
+rootProject.description = 'if you have the patience to go on counting, you discover that these pairs gradually become rarer'
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+if (!isFamily(FAMILY_WINDOWS) && !isFamily(FAMILY_MAC) && !isFamily(FAMILY_UNIX))
+    throw new GradleException("Unsupported operating system!")
+
+repositories {
+    mavenCentral()
+}
+
+javadoc {
+    source = sourceSets.main.allJava
+    classpath = configurations.compile
+}
+
+compileJava {
+    options.compilerArgs << '-parameters'
+}
+
+dependencies {
+    // math
+    compile 'org.nd4j:nd4j-native:0.8.0'
+    if (isFamily(FAMILY_WINDOWS))
+        compile 'org.nd4j:nd4j-native:0.8.0:windows-x86_64'
+    else if (isFamily(FAMILY_MAC))
+        compile 'org.nd4j:nd4j-native:0.8.0:macosx-x86_64'
+    else if (isFamily(FAMILY_UNIX))
+        compile 'org.nd4j:nd4j-native:0.8.0:linux-x86_64'
+
+    // rx
+    compile 'io.projectreactor:reactor-core:3.1.1.RELEASE'
+
+    // logging
+    compile 'org.slf4j:slf4j-api:1.7.25'
+    compile 'org.slf4j:slf4j-simple:1.7.25'
+
+    // java impl
+    compile 'org.projectlombok:lombok:1.16.18'
+
+    // tests
+    testCompile 'org.testng:testng:6.11'
+}
+
+test {
+    useTestNG()
+    testLogging {
+        events "PASSED", "STARTED", "FAILED", "SKIPPED"
+        showStandardStreams = true
+    }
+}
+
+tasks.withType(Javadoc) {
+    ext.capturedOutput = [ ]
+    def listener = { ext.capturedOutput << it } as StandardOutputListener
+
+    logging.addStandardErrorListener(listener)
+    logging.addStandardOutputListener(listener)
+    options.addStringOption('Xdoclint:all', '-quiet')
+
+    doLast {
+        logging.removeStandardOutputListener(listener)
+        logging.removeStandardErrorListener(listener)
+        ext.capturedOutput.join('').with { output ->
+            if (output =~ /warning/) {
+                throw new RuntimeException("Javadoc warning found: \n" + output)
+            }
+        }
+    }
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives jar
+    archives sourcesJar
+    archives javadocJar
+}
+
+if (!project.hasProperty("signing.keyId") && System.getenv("signingKeyId") != null) {
+    allprojects { ext."signing.keyId" = System.getenv("signingKeyId") }
+}
+
+if (!project.hasProperty("signing.password") && System.getenv("signingPassword") != null) {
+    allprojects { ext."signing.password" = System.getenv("signingPassword") }
+}
+
+if (!project.hasProperty("signing.secretKeyRingFile") && System.getenv("signingSecretKeyRing") != null) {
+    def file = new File("$projectDir/secring.gpg")
+    file.createNewFile()
+    file.text = System.getenv("signingSecretKeyRing")
+    allprojects { ext."signing.secretKeyRingFile" = "$projectDir/secring.gpg" }
+}
+
+signing {
+    sign configurations.archives
+}
+
+if (project.hasProperty("sign")) {
+    signArchives.enabled = sign.toBoolean()
+} else if (System.getenv("sign") != null) {
+    signArchives.enabled = System.getenv("sign").toBoolean()
+} else {
+    signArchives.enabled = false
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            customizePom(pom, rootProject)
+            from components.java
+
+            artifact sourcesJar
+            artifact javadocJar
+
+            // sign the pom
+            pom.withXml {
+                def pomFile = file("${project.buildDir}/generated-pom.xml")
+                writeTo(pomFile)
+                def pomAscFile = signing.sign(pomFile).signatureFiles[0]
+                artifact(pomAscFile) {
+                    classifier = null
+                    extension = 'pom.asc'
+                }
+                pomFile.delete()
+            }
+
+            // sign the artifacts
+            project.tasks.signArchives.signatureFiles.each {
+                artifact(it) {
+                    def matcher = it.file =~ /-(sources|javadoc)\.jar\.asc$/
+                    if (matcher.find()) {
+                        classifier = matcher.group(1)
+                    } else {
+                        classifier = null
+                    }
+                    extension = 'jar.asc'
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            url "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+            credentials {
+                if (project.hasProperty("sonatypeUsername") && project.hasProperty("sonatypePassword")) {
+                    username sonatypeUsername
+                    password sonatypePassword
+                } else if (System.getenv("sonatypeUsername") != null && System.getenv("sonatypePassword") != null) {
+                    username System.getenv("sonatypeUsername")
+                    password System.getenv("sonatypePassword")
+                } else {
+                    username null
+                    password null
+                }
+            }
+        }
+    }
+}
+
+def customizePom(pom, gradleProject) {
+    pom.withXml {
+        def root = asNode()
+
+        // eliminate test-scoped dependencies (no need in maven central POMs)
+        root.dependencies.removeAll { dep ->
+            dep.scope == "test"
+        }
+
+        // add all items necessary for maven central publication
+        root.children().last() + {
+            resolveStrategy = Closure.DELEGATE_FIRST
+
+            description gradleProject.description
+            name 'algieba'
+            url 'https://github.com/delta-leonis/algieba/'
+            organization {
+                name 'delta-leonis'
+                url 'http://leonis.io/'
+            }
+            issueManagement {
+                system 'GitHub'
+                url 'https://github.com/delta-leonis/algieba/issues'
+            }
+            licenses {
+                license {
+                    name 'AGPL'
+                    url 'https://github.com/delta-leonis/algieba/blob/master/LICENSE'
+                    distribution 'repo'
+                }
+            }
+            scm {
+                url 'https://github.com/delta-leonis/algieba/'
+                connection 'scm:git:git://github.com/delta-leonis/algieba.git'
+                developerConnection 'scm:git:ssh://git@github.com/delta-leonis/algieba.git'
+            }
+            developers {
+                developer {
+                    id 'romni'
+                    name 'Rimon Oz'
+                }
+                developer {
+                    id 'thumbnail'
+                    name 'Jeroen de Jong'
+                }
+                developer {
+                    id 'RyanMeulenkamp'
+                    name 'Ryan Meulenkamp'
+                }
+                developer {
+                    id 'ThomasHakkers'
+                    name 'Thomas Hakkers'
+                }
+            }
+        }
+    }
+}
+
+model {
+    tasks.publishMavenJavaPublicationToMavenLocal {
+        dependsOn(project.tasks.signArchives)
+    }
+    tasks.publishMavenJavaPublicationToMavenRepository {
+        dependsOn(project.tasks.signArchives)
+    }
+}
