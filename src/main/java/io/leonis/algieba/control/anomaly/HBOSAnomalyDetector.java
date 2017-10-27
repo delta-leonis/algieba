@@ -29,6 +29,7 @@ public class HBOSAnomalyDetector implements ScanningAnomalyDetector<Histogram, N
    *
    * @param inputSpaceRepresentation The measurement space representation as a {@link Histogram}.
    * @param value                    The value to compute the HBOS of.
+   * @return The HBOS of the supplied value w.r.t. the input space representation.
    */
   protected Number computeHBOS(final Histogram inputSpaceRepresentation, final Number value) {
     final Histogram normalizedRepresentation = this.normalizeVertically(inputSpaceRepresentation);
@@ -39,6 +40,7 @@ public class HBOSAnomalyDetector implements ScanningAnomalyDetector<Histogram, N
   }
 
   /**
+   * @param toNormalize The histogram which is to be normalized.
    * @return The (vertically) normalized representation of this histogram, such that the largest
    * bin(s) receive(s) a normalized weight of 1.
    */

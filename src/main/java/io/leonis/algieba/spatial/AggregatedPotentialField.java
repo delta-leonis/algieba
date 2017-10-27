@@ -1,7 +1,7 @@
 package io.leonis.algieba.spatial;
 
 import java.util.Set;
-import lombok.Value;
+import lombok.*;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 
@@ -12,21 +12,22 @@ import org.nd4j.linalg.factory.Nd4j;
  *
  * @author Rimon Oz
  */
-@Value
+@AllArgsConstructor
 public class AggregatedPotentialField implements PotentialField {
+  @Getter
   private final INDArray origin;
   private final Set<PotentialField> potentialFields;
 
   @Override
   public INDArray getPotential(final INDArray positionVector) {
-    return this.getPotentialFields().stream()
+    return this.potentialFields.stream()
         .map(potentialField -> potentialField.getPotential(positionVector))
         .reduce(Nd4j.zeros(1, 1), INDArray::add);
   }
 
   @Override
   public INDArray getForce(final INDArray positionVector) {
-    return this.getPotentialFields().stream()
+    return this.potentialFields.stream()
         .map(potentialField -> potentialField.getForce(positionVector))
         .reduce(INDArray::add)
         .orElse(Nd4j.zeros(positionVector.shape()));

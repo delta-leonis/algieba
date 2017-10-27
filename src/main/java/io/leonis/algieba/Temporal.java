@@ -10,7 +10,7 @@ package io.leonis.algieba;
 public interface Temporal {
 
   /**
-   * @return The last seen time of the timestampable object.
+   * @return The timestamp at which the object representation was constructed.
    */
   long getTimestamp();
 }

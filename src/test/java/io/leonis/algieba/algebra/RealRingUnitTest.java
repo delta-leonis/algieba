@@ -50,7 +50,10 @@ public class RealRingUnitTest {
    */
   @Test
   public void getAdditiveInverse() throws Exception {
-
+    assertTrue(this.realRing.getAdditiveInverse(this.firstValue).equals(-1 * this.firstValue));
+    assertTrue(this.realRing.getAdditiveInverse(this.secondValue).equals(-1 * this.secondValue));
+    assertTrue(this.realRing.getAdditiveInverse(this.thirdValue).equals(-1 * this.thirdValue));
+    assertTrue(this.realRing.getAdditiveInverse(this.thirdValue).equals(-1 * this.thirdValue));
   }
 
   /**
@@ -60,7 +63,10 @@ public class RealRingUnitTest {
    */
   @Test
   public void multiply() throws Exception {
-
+    assertTrue(this.realRing.multiply(this.firstValue, this.secondValue)
+        .equals(this.firstValue * this.secondValue));
+    assertTrue(this.realRing.multiply(this.secondValue, this.thirdValue)
+        .equals(this.secondValue * this.thirdValue));
   }
 
   /**
@@ -70,6 +76,18 @@ public class RealRingUnitTest {
    */
   @Test
   public void getMultiplicativeInverse() throws Exception {
-
+    assertTrue(this.realRing.getMultiplicativeInverse(this.firstValue).equals(1d / this.firstValue));
+    assertTrue(this.realRing.getMultiplicativeInverse(this.secondValue).equals(1d / this.secondValue));
+    assertTrue(this.realRing.getMultiplicativeInverse(this.thirdValue).equals(1d / this.thirdValue));
+    assertTrue(this.realRing.getMultiplicativeInverse(this.thirdValue).equals(1d / this.thirdValue));
+  }
+  /**
+   * Gets multiplicative inverse.
+   *
+   * @throws Exception the exception
+   */
+  @Test(expectedExceptions = ArithmeticException.class)
+  public void divisionByZero() throws Exception {
+    this.realRing.getMultiplicativeInverse(0d);
   }
 }

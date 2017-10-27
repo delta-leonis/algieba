@@ -27,7 +27,7 @@ package io.leonis.algieba.algebra;
 public interface Ring<F> extends Group<F> {
 
   /**
-   * @param <E>           the type parameter
+   * @param <E>           The type of exception thrown when the division is undefined.
    * @param firstElement  The first field number, which functions as the numerator.
    * @param secondElement The second field number, which functions as the denominator.
    * @return The quotient of the two arguments.

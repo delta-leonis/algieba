@@ -1,7 +1,7 @@
 package io.leonis.algieba.tree;
 
 import com.google.common.collect.Table;
-import java.util.function.BiConsumer;
+import java.util.function.*;
 
 /**
  * The Interface FiniteStateMachine.
@@ -22,18 +22,14 @@ public interface FiniteStateMachine<S extends FiniteStateMachine.State> extends 
    * @return True if successful, false otherwise.
    */
   default boolean transition(final S from, final S to) {
-    if (this.getStateTransitionTable().contains(from, to)) {
-      this.getStateTransitionTable().get(from, to).accept(from, to);
-      return true;
-    } else {
-      return false;
-    }
+    return this.getStateTransitionTable().contains(from, to)
+        && this.getStateTransitionTable().get(from, to).test(from, to);
   }
 
   /**
    * @return The state transition table.
    */
-  Table<S, S, BiConsumer<S, S>> getStateTransitionTable();
+  Table<S, S, BiPredicate<S, S>> getStateTransitionTable();
 
   /**
    * The Interface State.
