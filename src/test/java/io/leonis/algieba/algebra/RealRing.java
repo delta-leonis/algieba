@@ -23,7 +23,7 @@ public class RealRing implements Ring<Double> {
   }
 
   @Override
-  public Double getMultiplicativeInverse(final Double fieldElement) throws Exception {
+  public Double getMultiplicativeInverse(final Double fieldElement) throws ArithmeticException {
     if (fieldElement == 0) {
       throw new ArithmeticException("Division by zero!");
     }

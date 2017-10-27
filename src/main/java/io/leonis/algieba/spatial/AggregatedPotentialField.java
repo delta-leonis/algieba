@@ -13,7 +13,7 @@ import org.nd4j.linalg.factory.Nd4j;
  * @author Rimon Oz
  */
 @AllArgsConstructor
-public class AggregatedPotentialField implements PotentialField {
+public final class AggregatedPotentialField implements PotentialField {
   @Getter
   private final INDArray origin;
   private final Set<PotentialField> potentialFields;

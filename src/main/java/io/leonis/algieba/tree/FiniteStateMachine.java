@@ -1,7 +1,7 @@
 package io.leonis.algieba.tree;
 
 import com.google.common.collect.Table;
-import java.util.function.*;
+import java.util.function.BiPredicate;
 
 /**
  * The Interface FiniteStateMachine.
