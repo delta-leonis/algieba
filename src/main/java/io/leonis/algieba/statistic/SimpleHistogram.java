@@ -46,7 +46,7 @@ public class SimpleHistogram implements Histogram {
    * @param toAdd The value to compute the target index for.
    * @return The index of the bin in which the value should end.
    */
-  protected int computeTargetIndex(final double toAdd) {
+  private int computeTargetIndex(final double toAdd) {
     return (int) Math.floor((toAdd - this.getLowerBound()) / this.getBinWidth());
   }
 }

@@ -62,7 +62,7 @@ public class KalmanFilterPerformanceTest {
       .mapToObj(index -> Nd4j.create(
           new double[]{
               2 * index,
-              index + NOISE_RANGE * ((double) Math.random()) - NOISE_RANGE / 2f
+              index + NOISE_RANGE * Math.random() - NOISE_RANGE / 2f
           },
           new int[]{2, 1}))
       .collect(Collectors.toList());

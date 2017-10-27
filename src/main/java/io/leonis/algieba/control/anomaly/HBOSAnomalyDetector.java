@@ -31,7 +31,7 @@ public class HBOSAnomalyDetector implements ScanningAnomalyDetector<Histogram, N
    * @param value                    The value to compute the HBOS of.
    * @return The HBOS of the supplied value w.r.t. the input space representation.
    */
-  protected Number computeHBOS(final Histogram inputSpaceRepresentation, final Number value) {
+  private Number computeHBOS(final Histogram inputSpaceRepresentation, final Number value) {
     final Histogram normalizedRepresentation = this.normalizeVertically(inputSpaceRepresentation);
     final Double binHeight = normalizedRepresentation.getBins()
         .get((int) Math.floor((value.doubleValue() - normalizedRepresentation.getLowerBound())
@@ -44,7 +44,7 @@ public class HBOSAnomalyDetector implements ScanningAnomalyDetector<Histogram, N
    * @return The (vertically) normalized representation of this histogram, such that the largest
    * bin(s) receive(s) a normalized weight of 1.
    */
-  protected Histogram normalizeVertically(final Histogram toNormalize) {
+  private Histogram normalizeVertically(final Histogram toNormalize) {
     return toNormalize.getBins().stream()
         .max(Double::compare)
         .<Histogram>map(maximum -> new SimpleHistogram(

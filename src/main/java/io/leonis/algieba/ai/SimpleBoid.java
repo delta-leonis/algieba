@@ -40,7 +40,7 @@ public final class SimpleBoid<O extends Spatial & Moving> implements Boid<O> {
    * @return A velocity vector representing the suggested velocity for the specified boid such that
    * the specific boid steers away from other boids in the flock.
    */
-  private <O extends Spatial & Moving> INDArray collisionAvoidance(
+  private INDArray collisionAvoidance(
       final O currentBoid,
       final Set<? extends O> otherBoids,
       final double scalingFactor
@@ -67,7 +67,7 @@ public final class SimpleBoid<O extends Spatial & Moving> implements Boid<O> {
    * @return A velocity vector representing the suggested velocity for the specified boid such that
    * the specific boid matches its velocity vector with other boids within its range.
    */
-  private <O extends Spatial & Moving> INDArray velocityMatching(
+  private INDArray velocityMatching(
       final O currentBoid,
       final Set<? extends O> otherBoids,
       final double range
@@ -96,7 +96,7 @@ public final class SimpleBoid<O extends Spatial & Moving> implements Boid<O> {
    * @return A velocity vector representing the suggested velocity for the specified boid such that
    * the flock stays together.
    */
-  private <O extends Spatial & Moving> INDArray flockCentering(
+  private INDArray flockCentering(
       final O currentBoid,
       final Set<? extends O> otherBoids,
       final double scalingFactor

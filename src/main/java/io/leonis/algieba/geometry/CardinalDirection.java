@@ -23,5 +23,5 @@ public enum CardinalDirection {
   /**
    * West cardinal direction.
    */
-  WEST;
+  WEST
 }
