@@ -1,7 +1,7 @@
 # `algieba`
 > delta-leonis
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/fb040017069b489faf37ee1ef601906a)](https://www.codacy.com/app/delta-leonis/algieba?utm_source=github.com&utm_medium=referral&utm_content=delta-leonis/algieba&utm_campaign=badger)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/38930c0a926e489a8e984e6b234625a4)](https://www.codacy.com/app/delta-leonis/algieba?utm_source=github.com&utm_medium=referral&utm_content=delta-leonis/algieba&utm_campaign=badger)
 [![CircleCI](https://circleci.com/gh/delta-leonis/algieba.svg?style=svg)](https://circleci.com/gh/delta-leonis/algieba)
 
 You'll need at least Java 1.8 ([jre](https://www.java.com/download/)
