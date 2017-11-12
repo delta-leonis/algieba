@@ -50,10 +50,10 @@ public enum CardinalDirection {
   NORTH_WEST;
 
   /**
-   * @param orientation orientation in degrees where north is 0.
-   * @return he cardinal direction based on the provided orientation.
+   * @param orientation Orientation in radians where north is 0.
+   * @return The cardinal direction based on the provided orientation in radians.
    */
   public static CardinalDirection from(double orientation) {
-    return values()[(int)((orientation % 360) / 45)];
+    return values()[(int)((orientation % 2d * Math.PI) / (Math.PI / 4d))];
   }
 }
