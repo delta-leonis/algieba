@@ -28,10 +28,6 @@ javadoc {
     classpath = configurations.compile
 }
 
-compileJava {
-    options.compilerArgs << '-parameters'
-}
-
 dependencies {
     // math
     compile 'org.nd4j:nd4j-native:0.8.0'
