@@ -11,11 +11,6 @@ package io.leonis.algieba.geometry;
 public interface Orientation {
 
   /**
-   * @return The rate at which the orientation of the object is changing.
-   */
-  double getOrientationVelocity();
-
-  /**
    * @return The orientation of the object.
    */
   double getOrientation();
