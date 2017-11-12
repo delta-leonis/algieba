@@ -54,6 +54,6 @@ public enum CardinalDirection {
    * @return he cardinal direction based on the provided orientation.
    */
   public static CardinalDirection from(double orientation) {
-    return values()[(int)((orientation%360)/45)];
+    return values()[(int)((orientation % 360) / 45)];
   }
 }
