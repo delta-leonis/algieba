@@ -1,19 +1,29 @@
 # `algieba`
-> delta-leonis
+> if you have the patience to go on counting, you discover that these pairs gradually become rarer
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/38930c0a926e489a8e984e6b234625a4)](https://www.codacy.com/app/delta-leonis/algieba?utm_source=github.com&utm_medium=referral&utm_content=delta-leonis/algieba&utm_campaign=badger)
 [![CircleCI](https://circleci.com/gh/delta-leonis/algieba.svg?style=svg)](https://circleci.com/gh/delta-leonis/algieba)
 
 You'll need at least Java 1.8 ([jre](https://www.java.com/download/)
-/[jdk](http://www.oracle.com/technetwork/java/javase/downloads/index-jsp-138363.html)) 
+/[jdk](http://www.oracle.com/technetwork/java/javase/downloads/index-jsp-138363.html))
 to run `algieba`.
 
-## How to use
+## Dependency
 
-In order to use `algieba` clone this repository:
+#### Maven
 
 ```
-  git clone git@github.com:delta-leonis/algieba.git
+<dependency>
+    <groupId>io.leonis</groupId>
+    <artifactId>algieba</artifactId>
+    <version>0.0.3</version>
+</dependency>
+```
+
+#### Gradle
+
+```
+compile 'io.leonis:algieba:0.0.3'
 ```
 
 ## Documentation
