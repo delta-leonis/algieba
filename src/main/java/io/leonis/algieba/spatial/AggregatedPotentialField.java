@@ -32,4 +32,12 @@ public final class AggregatedPotentialField implements PotentialField {
         .reduce(INDArray::add)
         .orElse(Nd4j.zeros(positionVector.shape()));
   }
+
+  @Override
+  public INDArray getAccumulate(final INDArray origin, final INDArray target) {
+    return this.potentialFields.stream()
+        .map(potentialField -> potentialField.getAccumulate(origin, target))
+        .reduce(INDArray::add)
+        .orElse(Nd4j.zeros(origin.shape()));
+  }
 }
