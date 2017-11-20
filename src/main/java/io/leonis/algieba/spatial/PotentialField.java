@@ -5,6 +5,10 @@ import org.nd4j.linalg.api.ndarray.INDArray;
 /**
  * The Interface PotentialField.
  *
+ * This interface describes the functionality of a differentiable conservative potential field over
+ * {@link INDArray}, ie. a space which has a potential defined in every point, along with its
+ * derivatives, and a line integral.
+ *
  * @author Rimon Oz
  */
 public interface PotentialField {
@@ -21,6 +25,14 @@ public interface PotentialField {
    * position vector points.
    */
   INDArray getForce(final INDArray positionVector);
+
+  /**
+   * @param origin The origin from which to measure accumulated potential.
+   * @param target The target to which to measure accumulated potential.
+   * @return The accumulated potential from supplied origin to target (assumes the field to be
+   *     conservative, which is implied by the existence of the force vector).
+   */
+  INDArray getAccumulate(final INDArray origin, final INDArray target);
 
   /**
    * @return The vector pointing to the origin of the potential field.
