@@ -38,4 +38,14 @@ public interface PotentialField {
    * @return The vector pointing to the origin of the potential field.
    */
   INDArray getOrigin();
+
+  /**
+   * Represents an object which can supply a {@link PotentialField}.
+   */
+  interface Supplier {
+    /**
+     * @return The enclosed {@link PotentialField}
+     */
+    PotentialField getPotentialField();
+  }
 }
