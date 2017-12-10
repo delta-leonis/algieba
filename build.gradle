@@ -10,7 +10,7 @@ apply plugin: 'signing'
 apply plugin: 'maven'
 
 group 'io.leonis'
-version '0.0.3'
+version '0.0.4'
 archivesBaseName = "algieba"
 rootProject.description = 'if you have the patience to go on counting, you discover that these pairs gradually become rarer'
 sourceCompatibility = 1.8
