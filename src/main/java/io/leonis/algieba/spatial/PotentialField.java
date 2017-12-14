@@ -30,7 +30,7 @@ public interface PotentialField {
    * @param origin The origin from which to measure accumulated potential.
    * @param target The target to which to measure accumulated potential.
    * @return The accumulated potential from supplied origin to target (assumes the field to be
-   *     conservative, which is implied by the existence of the force vector).
+   * conservative, which is implied by the existence of the force vector).
    */
   INDArray getAccumulate(final INDArray origin, final INDArray target);
 
@@ -41,11 +41,13 @@ public interface PotentialField {
 
   /**
    * Represents an object which can supply a {@link PotentialField}.
+   *
+   * @param <P> The type of {@link PotentialField} enclosed by the supplier.
    */
-  interface Supplier {
+  interface Supplier<P extends PotentialField> {
     /**
      * @return The enclosed {@link PotentialField}
      */
-    PotentialField getPotentialField();
+    P getPotentialField();
   }
 }
