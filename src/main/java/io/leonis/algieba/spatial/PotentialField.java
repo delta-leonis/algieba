@@ -42,10 +42,10 @@ public interface PotentialField {
   /**
    * Represents an object which can supply a {@link PotentialField}.
    */
-  interface Supplier {
+  interface Supplier<P extends PotentialField> {
     /**
      * @return The enclosed {@link PotentialField}
      */
-    PotentialField getPotentialField();
+    P getPotentialField();
   }
 }
