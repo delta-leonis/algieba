@@ -15,7 +15,7 @@ public interface LineIntegral {
    * @param lowerBound The lower bound of the integral.
    * @param upperBound The upper bound of the integral.
    * @return The value of the line integral between the supplied lower and upper bounds (assumes
-   * the field to be conservative, which is implied by the existence of the force vector).
+   *     the field to be conservative, which is implied by the existence of the force vector).
    */
   double getLineIntegral(final INDArray lowerBound, final INDArray upperBound);
 }

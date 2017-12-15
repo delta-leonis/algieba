@@ -89,12 +89,12 @@ public class HydrodynamicPotentialField
    * See <a href="http://www.wolframalpha.com/input/?i=integral+of+ln((A*t%2BB)%5E2+%2B+(C*t%2BD)%5E2)">
    * this equation.</a>
    *
-   * @param lowerBound The starting point of the line along which to calculate the unscaled value of the
-   *                   parametrized line integral.
-   * @param upperBound The final point of the line along which to calculate the unscaled value of the
-   *                   parametrized line integral.
+   * @param lowerBound The starting point of the line along which to calculate the unscaled value
+   *                   of the parametrized line integral.
+   * @param upperBound The final point of the line along which to calculate the unscaled value
+   *                   of the parametrized line integral.
    * @return A {@link UnaryOperator} representing the indefinite integral of the parametrized line
-   * integral.
+   *     integral.
    */
   @Override
   public UnaryOperator<Double> computeLineIntegral(

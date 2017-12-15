@@ -65,72 +65,11 @@ public class BoundaryPotentialField implements PotentialField {
   }
 
   /**
-   * {@inheritDoc}
-   */
-  @Override
-  public double getLineIntegral(final INDArray lowerBound, final INDArray upperBound) {
-    return Math.sqrt(Transforms.pow(upperBound.sub(lowerBound), 2).sumNumber().doubleValue())
-        * (this.computeLineIntegral(lowerBound, upperBound, CardinalDirection.NORTH).apply(1d)
-        + this.computeLineIntegral(lowerBound, upperBound, CardinalDirection.SOUTH).apply(1d)
-        + this.computeLineIntegral(lowerBound, upperBound, CardinalDirection.EAST).apply(1d)
-        + this.computeLineIntegral(lowerBound, upperBound, CardinalDirection.WEST).apply(1d)
-        - this.computeLineIntegral(lowerBound, upperBound, CardinalDirection.NORTH).apply(0d)
-        - this.computeLineIntegral(lowerBound, upperBound, CardinalDirection.SOUTH).apply(0d)
-        - this.computeLineIntegral(lowerBound, upperBound, CardinalDirection.EAST).apply(0d)
-        - this.computeLineIntegral(lowerBound, upperBound, CardinalDirection.WEST).apply(0d));
-  }
-
-  /**
-   * @param origin    The starting point of the line integral.
-   * @param target    The target point of the line integral
-   * @param direction The {@link CardinalDirection} corresponding to the location of the boundary.
-   * @return The total potential between the supplied origin and target due to the boundary located
-   * in the supplied direction.
-   */
-  public UnaryOperator<Double> computeLineIntegral(final INDArray origin, final INDArray target,
-      final CardinalDirection direction) {
-    switch (direction) {
-      case NORTH:
-        return this.computeLineIntegral(origin.getDouble(0, 0), target.getDouble(0, 0));
-      case SOUTH:
-        return this.computeLineIntegral(this.getWidth() - origin.getDouble(0, 0),
-            this.getWidth() - target.getDouble(0, 0));
-      case EAST:
-        return this.computeLineIntegral(origin.getDouble(1, 0), target.getDouble(1, 0));
-      case WEST:
-        return this.computeLineIntegral(this.getLength() - origin.getDouble(1, 0),
-            this.getLength() - target.getDouble(1, 0));
-      default:
-        return input -> 0d;
-    }
-  }
-
-  /**
-   * See <a href="http://www.wolframalpha.com/input/?i=integral+of+1%2F(1+%2B+e%5E(D+-+(A*t+%2B+B)))dt">
-   * this equation</a>.
-   *
-   * @param origin The starting distance from the boundary.
-   * @param target The target distance from the boundary.
-   * @return The total potential between the supplied origin and target distances from a boundary.
-   */
-  public UnaryOperator<Double> computeLineIntegral(final double origin, final double target) {
-    return input -> {
-      if (origin == target) {
-        return 0d;
-      } else {
-        return Math.log(
-            Math.exp((target - origin) * input + origin) + Math.exp(this.getFieldDisplacement()))
-            / (target - origin);
-      }
-    };
-  }
-
-  /**
    * @param positionVector The position at which to compute the gradient of the potential.
    * @param direction      The {@link CardinalDirection} matching the boundary for which to compute
    *                       the gradient of the potential.
    * @return The gradient of the potential at the specified point due to the boundary located in the
-   * specified {@link CardinalDirection}.
+   *     specified {@link CardinalDirection}.
    */
   public INDArray getForce(final INDArray positionVector, final CardinalDirection direction) {
     switch (direction) {
@@ -170,5 +109,66 @@ public class BoundaryPotentialField implements PotentialField {
   public double getForceMagnitude(final double distanceToBoundary) {
     return Math.exp(distanceToBoundary + this.getFieldDisplacement())
         / Math.pow(Math.exp(distanceToBoundary) + Math.exp(this.getFieldDisplacement()), 2);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public double getLineIntegral(final INDArray lowerBound, final INDArray upperBound) {
+    return Math.sqrt(Transforms.pow(upperBound.sub(lowerBound), 2).sumNumber().doubleValue())
+        * (this.computeLineIntegral(lowerBound, upperBound, CardinalDirection.NORTH).apply(1d)
+        + this.computeLineIntegral(lowerBound, upperBound, CardinalDirection.SOUTH).apply(1d)
+        + this.computeLineIntegral(lowerBound, upperBound, CardinalDirection.EAST).apply(1d)
+        + this.computeLineIntegral(lowerBound, upperBound, CardinalDirection.WEST).apply(1d)
+        - this.computeLineIntegral(lowerBound, upperBound, CardinalDirection.NORTH).apply(0d)
+        - this.computeLineIntegral(lowerBound, upperBound, CardinalDirection.SOUTH).apply(0d)
+        - this.computeLineIntegral(lowerBound, upperBound, CardinalDirection.EAST).apply(0d)
+        - this.computeLineIntegral(lowerBound, upperBound, CardinalDirection.WEST).apply(0d));
+  }
+
+  /**
+   * @param origin    The starting point of the line integral.
+   * @param target    The target point of the line integral.
+   * @param direction The {@link CardinalDirection} corresponding to the location of the boundary.
+   * @return The total potential between the supplied origin and target due to the boundary located
+   *     in the supplied direction.
+   */
+  public UnaryOperator<Double> computeLineIntegral(final INDArray origin, final INDArray target,
+      final CardinalDirection direction) {
+    switch (direction) {
+      case NORTH:
+        return this.computeLineIntegral(origin.getDouble(0, 0), target.getDouble(0, 0));
+      case SOUTH:
+        return this.computeLineIntegral(this.getWidth() - origin.getDouble(0, 0),
+            this.getWidth() - target.getDouble(0, 0));
+      case EAST:
+        return this.computeLineIntegral(origin.getDouble(1, 0), target.getDouble(1, 0));
+      case WEST:
+        return this.computeLineIntegral(this.getLength() - origin.getDouble(1, 0),
+            this.getLength() - target.getDouble(1, 0));
+      default:
+        return input -> 0d;
+    }
+  }
+
+  /**
+   * See <a href="http://www.wolframalpha.com/input/?i=integral+of+1%2F(1+%2B+e%5E(D+-+(A*t+%2B+B)))dt">
+   * this equation</a>.
+   *
+   * @param origin The starting distance from the boundary.
+   * @param target The target distance from the boundary.
+   * @return The total potential between the supplied origin and target distances from a boundary.
+   */
+  public UnaryOperator<Double> computeLineIntegral(final double origin, final double target) {
+    return input -> {
+      if (origin == target) {
+        return 0d;
+      } else {
+        return Math.log(
+            Math.exp((target - origin) * input + origin) + Math.exp(this.getFieldDisplacement()))
+            / (target - origin);
+      }
+    };
   }
 }

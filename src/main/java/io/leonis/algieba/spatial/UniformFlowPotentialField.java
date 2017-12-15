@@ -67,17 +67,19 @@ public class UniformFlowPotentialField implements ParametricLineIntegral, Potent
   public INDArray getForce(final INDArray positionVector) {
     return this.multiplier.mul(-1d);
   }
-
-
+  
   /**
    * See <a href="http://www.wolframalpha.com/input/?i=integral+of+-S*((a*t%2Bb)*Cos%5BA%5D+%2B+(c*t%2Bd)*Sin%5BA%5D)+wrt+t">this equation.</a>
    * @param lowerBound The lower bound of the integral.
    * @param upperBound The upper bound of the integral.
    * @return A {@link UnaryOperator} representing the indefinite integral of the parametrized line
-   * integral.
+   *     integral.
    */
   @Override
-  public UnaryOperator<Double> computeLineIntegral(final INDArray lowerBound, final INDArray upperBound) {
+  public UnaryOperator<Double> computeLineIntegral(
+      final INDArray lowerBound,
+      final INDArray upperBound
+  ) {
     return input ->
       upperBound.sub(lowerBound)
           .mul(Math.pow(input, 2) / 2d)

@@ -36,7 +36,7 @@ public interface LocalLinearLineIntegral extends ReferenceFrame, ParametricLineI
    * @param lowerBound The lower bound of the integral.
    * @param upperBound The upper bound of the integral.
    * @return A {@link UnaryOperator} representing the result of an indefinite integral for which the
-   * value can be computed.
+   *     value can be computed.
    */
   UnaryOperator<Double> computeLineIntegral(final INDArray lowerBound, final INDArray upperBound);
 }

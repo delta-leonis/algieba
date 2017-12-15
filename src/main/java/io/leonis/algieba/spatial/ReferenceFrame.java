@@ -15,7 +15,7 @@ public interface ReferenceFrame {
   /**
    * @param positionVector The position vector which to change basis for.
    * @return The supplied (global) position vector expressed in terms of the basis formed by the
-   * potential field.
+   *     potential field.
    */
   INDArray toLocalFrame(final INDArray positionVector);
 

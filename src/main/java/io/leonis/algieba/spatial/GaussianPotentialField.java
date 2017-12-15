@@ -12,8 +12,8 @@ import org.nd4j.linalg.ops.transforms.Transforms;
 /**
  * The Class GaussianPotentialField.
  *
- * This class represents a {@link PotentialField} of an object which is modeled after a two-dimensional
- * normal distribution.
+ * This class represents a {@link PotentialField} of an object which is modeled after a
+ * two-dimensional normal distribution.
  *
  * @author Rimon Oz
  */
@@ -46,8 +46,8 @@ public class GaussianPotentialField implements PotentialField, LocalLinearLineIn
    *
    * @param lowerBound The lower bound of the integral.
    * @param upperBound The upper bound of the integral.
-   * @return A {@link UnaryOperator} representing the result of the indefinite integral for which the
-   * value can be computed.
+   * @return A {@link UnaryOperator} representing the result of the indefinite integral for
+   *     which the value can be computed.
    */
   @Override
   public UnaryOperator<Double> computeLineIntegral(
