@@ -16,15 +16,24 @@ import org.nd4j.linalg.factory.Nd4j;
 public final class AggregatedPotentialField implements PotentialField {
   @Getter
   private final INDArray origin;
+  /**
+   * The agregation of {@link PotentialField} as a {@link Set}.
+   */
   private final Set<PotentialField> potentialFields;
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public INDArray getPotential(final INDArray positionVector) {
+  public double getPotential(final INDArray positionVector) {
     return this.potentialFields.stream()
         .map(potentialField -> potentialField.getPotential(positionVector))
-        .reduce(Nd4j.zeros(1, 1), INDArray::add);
+        .reduce(0d, (total, potential) -> total + potential);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public INDArray getForce(final INDArray positionVector) {
     return this.potentialFields.stream()
@@ -33,11 +42,13 @@ public final class AggregatedPotentialField implements PotentialField {
         .orElse(Nd4j.zeros(positionVector.shape()));
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public INDArray getAccumulate(final INDArray origin, final INDArray target) {
+  public double getLineIntegral(final INDArray lowerBound, final INDArray upperBound) {
     return this.potentialFields.stream()
-        .map(potentialField -> potentialField.getAccumulate(origin, target))
-        .reduce(INDArray::add)
-        .orElse(Nd4j.zeros(origin.shape()));
+        .map(potentialField -> potentialField.getLineIntegral(lowerBound, upperBound))
+        .reduce(0d, (total, potential) -> total + potential);
   }
 }
