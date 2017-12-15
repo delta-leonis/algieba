@@ -58,44 +58,26 @@ public class BoundaryPotentialField implements PotentialField {
    */
   @Override
   public INDArray getForce(final INDArray positionVector) {
-    return this.getForce(positionVector, CardinalDirection.NORTH)
-        .add(this.getForce(positionVector, CardinalDirection.SOUTH))
-        .add(this.getForce(positionVector, CardinalDirection.EAST))
-        .add(this.getForce(positionVector, CardinalDirection.WEST));
-  }
-
-  /**
-   * @param positionVector The position at which to compute the gradient of the potential.
-   * @param direction      The {@link CardinalDirection} matching the boundary for which to compute
-   *                       the gradient of the potential.
-   * @return The gradient of the potential at the specified point due to the boundary located in the
-   *     specified {@link CardinalDirection}.
-   */
-  public INDArray getForce(final INDArray positionVector, final CardinalDirection direction) {
-    switch (direction) {
-      case NORTH:
-        return Nd4j.create(new double[]{
+    return Nd4j.create(
+        new double[]{
             -1 * this.getForceMagnitude(positionVector.getDouble(0, 0)),
             0,
-        }, new int[]{2, 1});
-      case SOUTH:
-        return Nd4j.create(new double[]{
-            this.getForceMagnitude(this.getWidth() - positionVector.getDouble(0, 0)),
-            0,
-        }, new int[]{2, 1});
-      case EAST:
-        return Nd4j.create(new double[]{
-            0,
-            -1 * this.getForceMagnitude(positionVector.getDouble(1, 0))
-        }, new int[]{2, 1});
-      case WEST:
-        return Nd4j.create(new double[]{
-            0,
-            this.getForceMagnitude(this.getLength() - positionVector.getDouble(1, 0))
-        }, new int[]{2, 1});
-      default:
-        return Nd4j.zeros(2, 1);
-    }
+        }, new int[]{2, 1})
+        .add(Nd4j.create(
+            new double[]{
+                this.getForceMagnitude(this.getWidth() - positionVector.getDouble(0, 0)),
+                0,
+            }, new int[]{2, 1}))
+        .add(Nd4j.create(
+            new double[]{
+                0,
+                -1 * this.getForceMagnitude(positionVector.getDouble(1, 0))
+            }, new int[]{2, 1}))
+        .add(Nd4j.create(
+            new double[]{
+                0,
+                this.getForceMagnitude(this.getLength() - positionVector.getDouble(1, 0))
+            }, new int[]{2, 1}));
   }
 
   /**
@@ -106,7 +88,7 @@ public class BoundaryPotentialField implements PotentialField {
    *                           the force vector.
    * @return The magnitude of the force vector due to a single boundary.
    */
-  public double getForceMagnitude(final double distanceToBoundary) {
+  private double getForceMagnitude(final double distanceToBoundary) {
     return Math.exp(distanceToBoundary + this.getFieldDisplacement())
         / Math.pow(Math.exp(distanceToBoundary) + Math.exp(this.getFieldDisplacement()), 2);
   }
@@ -134,8 +116,11 @@ public class BoundaryPotentialField implements PotentialField {
    * @return The total potential between the supplied origin and target due to the boundary located
    *     in the supplied direction.
    */
-  public UnaryOperator<Double> computeLineIntegral(final INDArray origin, final INDArray target,
-      final CardinalDirection direction) {
+  private UnaryOperator<Double> computeLineIntegral(
+      final INDArray origin,
+      final INDArray target,
+      final CardinalDirection direction
+  ) {
     switch (direction) {
       case NORTH:
         return this.computeLineIntegral(origin.getDouble(0, 0), target.getDouble(0, 0));
@@ -160,15 +145,12 @@ public class BoundaryPotentialField implements PotentialField {
    * @param target The target distance from the boundary.
    * @return The total potential between the supplied origin and target distances from a boundary.
    */
-  public UnaryOperator<Double> computeLineIntegral(final double origin, final double target) {
-    return input -> {
-      if (origin == target) {
-        return 0d;
-      } else {
-        return Math.log(
-            Math.exp((target - origin) * input + origin) + Math.exp(this.getFieldDisplacement()))
-            / (target - origin);
-      }
-    };
+  private UnaryOperator<Double> computeLineIntegral(final double origin, final double target) {
+    if (origin == target) {
+      return input -> 0d;
+    }
+    return input -> Math.log(
+        Math.exp((target - origin) * input + origin) + Math.exp(this.getFieldDisplacement()))
+        / (target - origin);
   }
 }

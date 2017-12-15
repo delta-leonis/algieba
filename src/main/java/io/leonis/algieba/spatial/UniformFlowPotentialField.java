@@ -67,7 +67,7 @@ public class UniformFlowPotentialField implements ParametricLineIntegral, Potent
   public INDArray getForce(final INDArray positionVector) {
     return this.multiplier.mul(-1d);
   }
-  
+
   /**
    * See <a href="http://www.wolframalpha.com/input/?i=integral+of+-S*((a*t%2Bb)*Cos%5BA%5D+%2B+(c*t%2Bd)*Sin%5BA%5D)+wrt+t">this equation.</a>
    * @param lowerBound The lower bound of the integral.

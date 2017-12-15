@@ -36,7 +36,7 @@ public class GaussianPotentialField implements PotentialField, LocalLinearLineIn
    */
   private final double length;
   /**
-   * Angle in radians.
+   * Orientation of the field in radians.
    */
   private final double angle;
 
