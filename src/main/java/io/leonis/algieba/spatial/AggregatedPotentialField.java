@@ -28,8 +28,7 @@ public final class AggregatedPotentialField implements PotentialField {
   public double getPotential(final INDArray positionVector) {
     return this.potentialFields.stream()
         .mapToDouble(potentialField -> potentialField.getPotential(positionVector))
-        .reduce(Double::sum)
-        .orElse(0d);
+        .sum();
   }
 
   /**
@@ -50,7 +49,6 @@ public final class AggregatedPotentialField implements PotentialField {
   public double getLineIntegral(final INDArray lowerBound, final INDArray upperBound) {
     return this.potentialFields.stream()
         .mapToDouble(potentialField -> potentialField.getLineIntegral(lowerBound, upperBound))
-        .reduce(Double::sum)
-        .orElse(0d);
+        .sum();
   }
 }
