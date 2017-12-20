@@ -1,11 +1,10 @@
 package io.leonis.algieba.spatial;
 
 import io.leonis.algieba.calculus.LocalLinearLineIntegral;
-import io.leonis.algieba.geometry.Rotation;
+import io.leonis.algieba.geometry.*;
 import java.util.function.UnaryOperator;
 import lombok.Value;
 import org.nd4j.linalg.api.ndarray.INDArray;
-import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.ops.transforms.Transforms;
 
 /**
@@ -71,7 +70,7 @@ public class HydrodynamicPotentialField
   @Override
   public INDArray toLocalFrame(final INDArray positionVector) {
     return this.planarCartesian(positionVector.sub(this.getOrigin()), this.getAngle())
-        .div(Nd4j.create(new double[]{this.getLength(), this.getWidth()}, new int[]{2, 1}));
+        .div(Vectors.columnVector(this.getLength(), this.getWidth()));
   }
 
   /**
@@ -81,7 +80,7 @@ public class HydrodynamicPotentialField
   public INDArray toGlobalFrame(final INDArray positionVector) {
     return this.planarCartesian(
         positionVector
-            .mul(Nd4j.create(new double[]{this.getLength(), this.getWidth()}, new int[]{2, 1})),
+            .mul(Vectors.columnVector(this.getLength(), this.getWidth())),
         -1 * this.getAngle());
   }
 

@@ -1,6 +1,6 @@
 package io.leonis.algieba.spatial;
 
-import io.leonis.algieba.geometry.CardinalDirection;
+import io.leonis.algieba.geometry.*;
 import java.util.function.UnaryOperator;
 import lombok.Value;
 import org.nd4j.linalg.api.ndarray.INDArray;
@@ -58,26 +58,18 @@ public class BoundaryPotentialField implements PotentialField {
    */
   @Override
   public INDArray getForce(final INDArray positionVector) {
-    return Nd4j.create(
-        new double[]{
-            -1 * this.getForceMagnitude(positionVector.getDouble(0, 0)),
+    return Vectors.columnVector(
+        -1 * this.getForceMagnitude(positionVector.getDouble(0, 0)),
+        0)
+        .add(Vectors.columnVector(
+            this.getForceMagnitude(this.getWidth() - positionVector.getDouble(0, 0)),
+            0))
+        .add(Vectors.columnVector(
             0,
-        }, new int[]{2, 1})
-        .add(Nd4j.create(
-            new double[]{
-                this.getForceMagnitude(this.getWidth() - positionVector.getDouble(0, 0)),
-                0,
-            }, new int[]{2, 1}))
-        .add(Nd4j.create(
-            new double[]{
-                0,
-                -1 * this.getForceMagnitude(positionVector.getDouble(1, 0))
-            }, new int[]{2, 1}))
-        .add(Nd4j.create(
-            new double[]{
-                0,
-                this.getForceMagnitude(this.getLength() - positionVector.getDouble(1, 0))
-            }, new int[]{2, 1}));
+            -1 * this.getForceMagnitude(positionVector.getDouble(1, 0))))
+        .add(Vectors.columnVector(
+            0,
+            this.getForceMagnitude(this.getLength() - positionVector.getDouble(1, 0))));
   }
 
   /**
@@ -114,7 +106,7 @@ public class BoundaryPotentialField implements PotentialField {
    * @param target    The target point of the line integral.
    * @param direction The {@link CardinalDirection} corresponding to the location of the boundary.
    * @return The total potential between the supplied origin and target due to the boundary located
-   *     in the supplied direction.
+   * in the supplied direction.
    */
   private UnaryOperator<Double> computeLineIntegral(
       final INDArray origin,

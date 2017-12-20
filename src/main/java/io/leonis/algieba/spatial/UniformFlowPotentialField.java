@@ -1,10 +1,10 @@
 package io.leonis.algieba.spatial;
 
 import io.leonis.algieba.calculus.ParametricLineIntegral;
+import io.leonis.algieba.geometry.Vectors;
 import java.util.function.UnaryOperator;
 import lombok.Value;
 import org.nd4j.linalg.api.ndarray.INDArray;
-import org.nd4j.linalg.factory.Nd4j;
 
 /**
  * The Class UniformFlowPotentialField.
@@ -41,8 +41,7 @@ public class UniformFlowPotentialField implements ParametricLineIntegral, Potent
     this.origin = origin;
     this.angle = angle;
     this.strength = strength;
-    this.multiplier = Nd4j
-        .create(new double[]{Math.cos(this.angle), Math.sin(this.angle)}, new int[]{2, 1})
+    this.multiplier = Vectors.columnVector(Math.cos(this.angle), Math.sin(this.angle))
         .mul(-1 * this.strength);
   }
 

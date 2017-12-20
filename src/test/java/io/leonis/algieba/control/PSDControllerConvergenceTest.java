@@ -1,6 +1,7 @@
 package io.leonis.algieba.control;
 
 import com.google.common.collect.Lists;
+import io.leonis.algieba.geometry.Vectors;
 import java.util.List;
 import java.util.stream.IntStream;
 import lombok.Value;
@@ -20,12 +21,7 @@ import reactor.core.publisher.Flux;
 public class PSDControllerConvergenceTest {
 
   private final static int POINTS = 100;
-  private final INDArray setPoint = Nd4j.create(
-      new float[]{
-          -100f,
-          30f
-      },
-      new int[]{2, 1});
+  private final INDArray setPoint = Vectors.columnVector(-100d, 30d);
 
   private final double proportionalFactor = 1.2d;
   private final double summationFactor = 0;
