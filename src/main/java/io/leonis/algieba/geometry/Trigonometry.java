@@ -6,7 +6,7 @@ import lombok.experimental.UtilityClass;
  * The Class Trigonometry.
  *
  * This class contains utility functions for trigonometric operations which are missing from
- * {@link java.lang.Math}
+ * {@link java.lang.Math}.
  *
  * @author Rimon Oz
  */
