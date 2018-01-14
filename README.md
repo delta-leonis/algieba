@@ -16,14 +16,14 @@ to run `algieba`.
 <dependency>
     <groupId>io.leonis</groupId>
     <artifactId>algieba</artifactId>
-    <version>0.0.4</version>
+    <version>0.0.5</version>
 </dependency>
 ```
 
 #### Gradle
 
 ```
-compile 'io.leonis:algieba:0.0.4'
+compile 'io.leonis:algieba:0.0.5'
 ```
 
 ## Documentation
