@@ -36,8 +36,11 @@ public class UniformFlowPotentialField implements ParametricLineIntegral, Potent
    * @param angle    The angle at which the uniform flow flows.
    * @param strength The slope of the {@link PotentialField}
    */
-  public UniformFlowPotentialField(final INDArray origin, final double angle,
-      final double strength) {
+  public UniformFlowPotentialField(
+      final INDArray origin,
+      final double angle,
+      final double strength
+  ) {
     this.origin = origin;
     this.angle = angle;
     this.strength = strength;

@@ -59,7 +59,6 @@ public class HydrodynamicPotentialField
   @Override
   public INDArray getForce(final INDArray positionVector) {
     final INDArray localPositionVector = this.toLocalFrame(positionVector);
-
     return this.toGlobalFrame(localPositionVector.mul(2d)
         .div(Transforms.pow(localPositionVector, 2).sumNumber()));
   }
