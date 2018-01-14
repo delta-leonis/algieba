@@ -1,6 +1,6 @@
 package io.leonis.algieba.spatial;
 
-import io.leonis.algieba.geometry.*;
+import io.leonis.algieba.geometry.Vectors;
 import java.util.function.UnaryOperator;
 import lombok.Value;
 import org.nd4j.linalg.api.ndarray.INDArray;
@@ -91,42 +91,68 @@ public class BoundaryPotentialField implements PotentialField {
   @Override
   public double getLineIntegral(final INDArray lowerBound, final INDArray upperBound) {
     return Math.sqrt(Transforms.pow(upperBound.sub(lowerBound), 2).sumNumber().doubleValue())
-        * (this.computeLineIntegral(lowerBound, upperBound, CardinalDirection.NORTH).apply(1d)
-        + this.computeLineIntegral(lowerBound, upperBound, CardinalDirection.SOUTH).apply(1d)
-        + this.computeLineIntegral(lowerBound, upperBound, CardinalDirection.EAST).apply(1d)
-        + this.computeLineIntegral(lowerBound, upperBound, CardinalDirection.WEST).apply(1d)
-        - this.computeLineIntegral(lowerBound, upperBound, CardinalDirection.NORTH).apply(0d)
-        - this.computeLineIntegral(lowerBound, upperBound, CardinalDirection.SOUTH).apply(0d)
-        - this.computeLineIntegral(lowerBound, upperBound, CardinalDirection.EAST).apply(0d)
-        - this.computeLineIntegral(lowerBound, upperBound, CardinalDirection.WEST).apply(0d));
+        * (this.computeNorthernLineIntegralSegment(lowerBound, upperBound).apply(1d)
+        + this.computeSouthernLineIntegralSegment(lowerBound, upperBound).apply(1d)
+        + this.computeEasternLineIntegralSegment(lowerBound, upperBound).apply(1d)
+        + this.computeWesternLineIntegralSegment(lowerBound, upperBound).apply(1d)
+        - this.computeNorthernLineIntegralSegment(lowerBound, upperBound).apply(0d)
+        - this.computeSouthernLineIntegralSegment(lowerBound, upperBound).apply(0d)
+        - this.computeEasternLineIntegralSegment(lowerBound, upperBound).apply(0d)
+        - this.computeWesternLineIntegralSegment(lowerBound, upperBound).apply(0d));
   }
 
   /**
-   * @param origin    The starting point of the line integral.
-   * @param target    The target point of the line integral.
-   * @param direction The {@link CardinalDirection} corresponding to the location of the boundary.
-   * @return The total potential between the supplied origin and target due to the boundary located
-   * in the supplied direction.
+   * @param origin The starting point of the line integral.
+   * @param target The target point of the line integral.
+   * @return The total potential between the supplied origin and target due to the northern boundary
+   * segment.
    */
-  private UnaryOperator<Double> computeLineIntegral(
+  private UnaryOperator<Double> computeNorthernLineIntegralSegment(
       final INDArray origin,
-      final INDArray target,
-      final CardinalDirection direction
+      final INDArray target
   ) {
-    switch (direction) {
-      case NORTH:
-        return this.computeLineIntegral(origin.getDouble(0, 0), target.getDouble(0, 0));
-      case SOUTH:
-        return this.computeLineIntegral(this.getWidth() - origin.getDouble(0, 0),
-            this.getWidth() - target.getDouble(0, 0));
-      case EAST:
-        return this.computeLineIntegral(origin.getDouble(1, 0), target.getDouble(1, 0));
-      case WEST:
-        return this.computeLineIntegral(this.getLength() - origin.getDouble(1, 0),
-            this.getLength() - target.getDouble(1, 0));
-      default:
-        return input -> 0d;
-    }
+    return this.computeLineIntegral(origin.getDouble(0, 0), target.getDouble(0, 0));
+  }
+
+  /**
+   * @param origin The starting point of the line integral.
+   * @param target The target point of the line integral.
+   * @return The total potential between the supplied origin and target due to the southern boundary
+   * segment.
+   */
+  private UnaryOperator<Double> computeSouthernLineIntegralSegment(
+      final INDArray origin,
+      final INDArray target
+  ) {
+    return this.computeLineIntegral(this.getWidth() - origin.getDouble(0, 0),
+        this.getWidth() - target.getDouble(0, 0));
+  }
+
+  /**
+   * @param origin The starting point of the line integral.
+   * @param target The target point of the line integral.
+   * @return The total potential between the supplied origin and target due to the eastern boundary
+   * segment.
+   */
+  private UnaryOperator<Double> computeEasternLineIntegralSegment(
+      final INDArray origin,
+      final INDArray target
+  ) {
+    return this.computeLineIntegral(origin.getDouble(1, 0), target.getDouble(1, 0));
+  }
+
+  /**
+   * @param origin The starting point of the line integral.
+   * @param target The target point of the line integral.
+   * @return The total potential between the supplied origin and target due to the western boundary
+   * segment.
+   */
+  private UnaryOperator<Double> computeWesternLineIntegralSegment(
+      final INDArray origin,
+      final INDArray target
+  ) {
+    return this.computeLineIntegral(this.getLength() - origin.getDouble(1, 0),
+        this.getLength() - target.getDouble(1, 0));
   }
 
   /**
