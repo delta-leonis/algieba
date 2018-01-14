@@ -105,7 +105,7 @@ public class BoundaryPotentialField implements PotentialField {
    * @param origin The starting point of the line integral.
    * @param target The target point of the line integral.
    * @return The total potential between the supplied origin and target due to the northern boundary
-   * segment.
+   *     segment.
    */
   private UnaryOperator<Double> computeNorthernLineIntegralSegment(
       final INDArray origin,
@@ -118,7 +118,7 @@ public class BoundaryPotentialField implements PotentialField {
    * @param origin The starting point of the line integral.
    * @param target The target point of the line integral.
    * @return The total potential between the supplied origin and target due to the southern boundary
-   * segment.
+   *     segment.
    */
   private UnaryOperator<Double> computeSouthernLineIntegralSegment(
       final INDArray origin,
@@ -132,7 +132,7 @@ public class BoundaryPotentialField implements PotentialField {
    * @param origin The starting point of the line integral.
    * @param target The target point of the line integral.
    * @return The total potential between the supplied origin and target due to the eastern boundary
-   * segment.
+   *     segment.
    */
   private UnaryOperator<Double> computeEasternLineIntegralSegment(
       final INDArray origin,
@@ -145,7 +145,7 @@ public class BoundaryPotentialField implements PotentialField {
    * @param origin The starting point of the line integral.
    * @param target The target point of the line integral.
    * @return The total potential between the supplied origin and target due to the western boundary
-   * segment.
+   *     segment.
    */
   private UnaryOperator<Double> computeWesternLineIntegralSegment(
       final INDArray origin,
