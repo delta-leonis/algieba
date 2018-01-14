@@ -1,6 +1,7 @@
 io.leonis.algieba
 io.leonis.algieba.ai
 io.leonis.algieba.algebra
+io.leonis.algieba.calculus
 io.leonis.algieba.control
 io.leonis.algieba.control.anomaly
 io.leonis.algieba.filter
