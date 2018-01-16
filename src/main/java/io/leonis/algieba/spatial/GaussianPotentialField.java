@@ -17,7 +17,7 @@ import org.nd4j.linalg.ops.transforms.Transforms;
  * @author Rimon Oz
  */
 @Value
-public class GaussianPotentialField implements PotentialField, LocalLinearLineIntegral, Rotation {
+public class GaussianPotentialField implements PotentialField, LocalLinearLineIntegral {
   /**
    * A vector pointing to the origin.
    */
@@ -113,7 +113,7 @@ public class GaussianPotentialField implements PotentialField, LocalLinearLineIn
    */
   @Override
   public INDArray toLocalFrame(final INDArray positionVector) {
-    return this.planarCartesian(positionVector.sub(this.getOrigin()), this.getAngle())
+    return Vectors.rotatePlanarCartesian(positionVector.sub(this.getOrigin()), this.getAngle())
         .div(Vectors.columnVector(this.getLength(), this.getWidth()));
   }
 
@@ -122,7 +122,7 @@ public class GaussianPotentialField implements PotentialField, LocalLinearLineIn
    */
   @Override
   public INDArray toGlobalFrame(final INDArray positionVector) {
-    return this.planarCartesian(
+    return Vectors.rotatePlanarCartesian(
         positionVector
             .mul(Vectors.columnVector(this.getLength(), this.getWidth())),
         -1 * this.getAngle());

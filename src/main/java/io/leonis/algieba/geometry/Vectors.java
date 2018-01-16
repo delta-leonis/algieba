@@ -29,4 +29,18 @@ public class Vectors {
   public static INDArray columnVector(double... values) {
     return Nd4j.create(values, new int[]{values.length, 1});
   }
+
+  /**
+   * @param input    The input vector as a column vector (2 by 1).
+   * @param rotation The rotation (in radians).
+   * @return The vector rotated by the specified rotation.
+   */
+  public static INDArray rotatePlanarCartesian(final INDArray input, final double rotation) {
+    return Nd4j.create(
+        new double[]{
+            StrictMath.cos(rotation), -1d * StrictMath.sin(rotation),
+            StrictMath.sin(rotation), StrictMath.cos(rotation)
+        },
+        new int[]{2, 2}).mmul(input);
+  }
 }
