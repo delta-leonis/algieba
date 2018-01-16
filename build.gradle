@@ -30,26 +30,20 @@ javadoc {
 
 dependencies {
     // math
-    compile 'org.nd4j:nd4j-native:0.8.0'
-    if (isFamily(FAMILY_WINDOWS))
-        compile 'org.nd4j:nd4j-native:0.8.0:windows-x86_64'
-    else if (isFamily(FAMILY_MAC))
-        compile 'org.nd4j:nd4j-native:0.8.0:macosx-x86_64'
-    else if (isFamily(FAMILY_UNIX))
-        compile 'org.nd4j:nd4j-native:0.8.0:linux-x86_64'
+    compile 'org.nd4j:nd4j-native-platform:0.9.0'
 
     // rx
-    compile 'io.projectreactor:reactor-core:3.1.1.RELEASE'
+    compile 'io.projectreactor:reactor-core:3.1.2.RELEASE'
 
     // logging
     compile 'org.slf4j:slf4j-api:1.7.25'
     compile 'org.slf4j:slf4j-simple:1.7.25'
 
     // java impl
-    compile 'org.projectlombok:lombok:1.16.18'
+    compile 'org.projectlombok:lombok:1.16.20'
 
     // tests
-    testCompile 'org.testng:testng:6.11'
+    testCompile 'org.testng:testng:6.13.1'
 }
 
 test {
