@@ -16,9 +16,6 @@ rootProject.description = 'if you have the patience to go on counting, you disco
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-if (!isFamily(FAMILY_WINDOWS) && !isFamily(FAMILY_MAC) && !isFamily(FAMILY_UNIX))
-    throw new GradleException("Unsupported operating system!")
-
 repositories {
     mavenCentral()
 }
